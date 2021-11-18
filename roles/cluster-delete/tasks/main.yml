@@ -29,9 +29,9 @@
     export TF_VAR_cluster_name="{{ ansible_operator_meta.name }}"
     export TF_VAR_machine_type="{{machine_type}}"
     export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
-    export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"    
+    export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
     terraform destroy -auto-approve
-  when:  ({{protected}}  != 'true')
+  when:  (protected  != 'true')
 
   register: stdout
 
