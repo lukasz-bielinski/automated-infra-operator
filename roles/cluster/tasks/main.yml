@@ -2,7 +2,9 @@
 # tasks file for Cluster
 - name: refresh terrafrom repo
   shell: |
-    cd /tf-repo
+    rm -rf  /tf-repo-"{{ ansible_operator_meta.name }}" || true
+    git clone "{{terraform_template_repo}}" /tf-repo-"{{ ansible_operator_meta.name }}"
+    cd /tf-repo-"{{ ansible_operator_meta.name }}"
     git config pull.rebase false
     git reset --hard
     git pull
@@ -20,8 +22,8 @@
     export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
     export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
     env |grep TF
-    cd /tf-repo
-    terraform plan
+    cd /tf-repo-"{{ ansible_operator_meta.name }}"
+    terraform plan -out=/tmp/plan-"{{ ansible_operator_meta.name }}"
   register: stdout
 
 - name: debug output
@@ -35,8 +37,8 @@
     export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
     export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
     env |grep TF
-    cd /tf-repo
-    terraform apply -auto-approve
+    cd /tf-repo-"{{ ansible_operator_meta.name }}"
+    terraform apply /tmp/plan-"{{ ansible_operator_meta.name }}" -auto-approve
   register: stdout
 
 - name: debug output

@@ -29,8 +29,7 @@ spec:
       - args:
         - --leader-elect
         - --leader-election-id=automated-infra
-        - "--max-workers"
-        - "1"        
+        - --max-concurrent-reconciles=1
         image: controller:latest
         imagePullPolicy: Always
         name: manager
