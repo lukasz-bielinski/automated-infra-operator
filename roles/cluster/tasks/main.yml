@@ -17,10 +17,12 @@
     export TF_VAR_CLI_ARGS_plan="--parallelism=30"
     export TF_VAR_cluster_name="{{ ansible_operator_meta.name }}"
     export TF_VAR_machine_type="{{machine_type}}"
+    export TF_WORKSPACE="{{ ansible_operator_meta.name }}"
     export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
     export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
     env |grep TF
     cd /tf-repo
+    terraform init
     terraform refresh
     terraform plan
   register: stdout
@@ -35,8 +37,10 @@
     export TF_VAR_machine_type="{{machine_type}}"
     export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
     export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
+    export TF_WORKSPACE="{{ ansible_operator_meta.name }}"
     env |grep TF
     cd /tf-repo
+    terraform init
     terraform refresh
     terraform apply -auto-approve
   register: stdout
