@@ -1,0 +1,10 @@
+---
+# Use the 'create api' subcommand to add watches to this file.
+- version: v1alpha1
+  group: cache.xddevelopment.com
+  kind: Cluster
+  role: cluster
+  finalizer:
+    name: finalizer.cluster.cluster.xddevelopment.com
+    role: /opt/ansible/roles/cluster-delete
+#+kubebuilder:scaffold:watch

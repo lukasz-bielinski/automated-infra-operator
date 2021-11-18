@@ -1,0 +1,49 @@
+---
+# tasks file for Cluster
+- name: refresh terrafrom repo
+  shell: |
+    cd /tf-repo
+    git config pull.rebase false
+    git reset --hard
+    git pull
+    git checkout "{{terraform_template_branch}}"
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}
+
+- name: terrafrom plan
+  shell: |
+    export TF_VAR_CLI_ARGS_plan="--parallelism=30"
+    export TF_VAR_cluster_name="{{ ansible_operator_meta.name }}"
+    export TF_VAR_machine_type="{{machine_type}}"
+    export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
+    export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
+    env |grep TF
+    cd /tf-repo
+    terraform plan
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}
+
+- name: create GKE cluster
+  shell: |
+    export TF_VAR_CLI_ARGS_plan="--parallelism=30"
+    export TF_VAR_cluster_name="{{ ansible_operator_meta.name }}"
+    export TF_VAR_machine_type="{{machine_type}}"
+    export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
+    export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"
+    env |grep TF
+    cd /tf-repo
+    terraform apply -auto-approve
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}
+
+  # when:  (ansible_operator_meta.name  != 'kube-system') and (ansible_operator_meta.name  != 'kube-node-lease') and (ansible_operator_meta.name  != 'kube-public') and (ansible_operator_meta.name  != 'monitoring') and (ansible_operator_meta.name  != 'argocd')  and (ansible_operator_meta.name  != 'concourse') and (ansible_operator_meta.name  != 'rook-ceph')  and (ansible_operator_meta.name != 'ingress-controller')
+
+# - name: deploy kustomize apps into cluster
+#
+#   when:  (ansible_operator_meta.name  != 'kube-system') and (ansible_operator_meta.name  != 'kube-node-lease') and (ansible_operator_meta.name  != 'kube-public') and (ansible_operator_meta.name  != 'monitoring') and (ansible_operator_meta.name  != 'argocd')  and (ansible_operator_meta.name  != 'concourse') and (ansible_operator_meta.name  != 'rook-ceph')  and (ansible_operator_meta.name != 'ingress-controller')

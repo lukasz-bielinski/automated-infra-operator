@@ -1,0 +1,10 @@
+---
+# defaults file for Cluster
+cluster_k8s_version: "1.21.5-gke.1302"
+kustomize_apps_repo: "https://github.com/lukasz-bielinski/automated-infra-kustomize-apps.git"
+kustomize_apps_branch: "main"
+terraform_template_branch: "main"
+terraform_template_repo: "https://github.com/lukasz-bielinski/automated-infra-terraform.git"
+machine_type: "e2-medium"
+autoscaling_max_node_count: "3"
+protected: "true"

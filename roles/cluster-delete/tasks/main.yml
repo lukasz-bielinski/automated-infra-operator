@@ -1,0 +1,39 @@
+- name: destroy GKE cluster -refresh repo
+  shell: |
+    cd /tf-repo
+    git reset --hard
+    git pull
+    git checkout "{{terraform_template_branch}}"
+  when:  ({{protected}}  != 'true')
+
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}
+
+- name: destroy GKE cluster - terrafrom plan
+  shell: |
+    cd /tf-repo
+    terraform plan
+  when:  ({{protected}}  != 'true')
+
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}
+
+- name: destroy GKE cluster - terrafrom destroy
+  shell: |
+    cd /tf-repo
+    export TF_VAR_CLI_ARGS_plan="--parallelism=30"
+    export TF_VAR_cluster_name="{{ ansible_operator_meta.name }}"
+    export TF_VAR_machine_type="{{machine_type}}"
+    export TF_VAR_autoscaling_max_node_count="{{autoscaling_max_node_count}}"
+    export TF_VAR_cluster_k8s_version="{{cluster_k8s_version}}"    
+    terraform destroy -auto-approve
+  when:  ({{protected}}  != 'true')
+
+  register: stdout
+
+- name: debug output
+  debug: msg={{ stdout }}

@@ -1,0 +1,10 @@
+apiVersion: cache.xddevelopment.com/v1alpha1
+kind: Cluster
+metadata:
+  name: cluster-sample
+spec:
+  cluster_k8s_version: "1.21.5-gke.1302"
+  kustomize_apps_repo: "https://github.com/lukasz-bielinski/automated-infra-kustomize-apps.git"
+  kustomize_apps_branch: "master"
+  terraform_template_branch: "master"
+  terraform_template_repo: "https://github.com/lukasz-bielinski/automated-infra-terraform.git"
